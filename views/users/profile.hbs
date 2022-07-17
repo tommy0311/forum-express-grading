@@ -56,3 +56,54 @@
   </div>
   {{/each}}
 </div>
+<div class="row">
+  <h6 class="mb-3" style="background-color:whitesmoke;">
+    <strong>
+      {{user.FavoritedRestaurants.length}} 已收藏餐廳
+    </strong>
+  </h6>
+  {{#each user.FavoritedRestaurants}}
+  <div class="col-md-2">
+    <div class="card mb-4 shadow-sm">
+      <a href="/restaurants/{{this.id}}">
+        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      </a>
+    </div>
+  </div>
+  {{/each}}
+</div>
+<div class="row">
+  <h6 class="mb-3" style="background-color:whitesmoke;">
+    <strong>
+      {{user.Followings.length}} 追蹤者
+    </strong>
+  </h6>
+  {{#each user.Followings}}
+  <div class="col-md-2">
+    <div class="card mb-4 shadow-sm">
+      <a href="/users/{{this.id}}">
+        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      </a>
+    </div>
+  </div>
+  {{/each}}
+</div>
+<div class="row">
+  <h6 class="mb-3" style="background-color:whitesmoke;">
+    <strong>
+      {{user.Followers.length}} 追隨者
+    </strong>
+  </h6>
+  {{#each user.Followers}}
+  <div class="col-md-2">
+    <div class="card mb-4 shadow-sm">
+      <a href="/users/{{this.id}}">
+        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      </a>
+    </div>
+  </div>
+  {{/each}}
+</div>

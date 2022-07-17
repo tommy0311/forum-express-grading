@@ -44,10 +44,24 @@ const userController = {
   getUser: async (req, res, next) => {
     const [errUser, user] =
       await to(User.findByPk(req.params.id, {
-        include: [{
-          model: Comment,
-          include: Restaurant
-        }]
+        include: [
+          {
+            model: Comment,
+            include: Restaurant
+          },
+          {
+            model: Restaurant,
+            as: 'FavoritedRestaurants'
+          },
+          {
+            model: User,
+            as: 'Followings'
+          },
+          {
+            model: User,
+            as: 'Followers'
+          }
+        ]
       }))
 
     if (errUser || !user) {
@@ -56,8 +70,29 @@ const userController = {
       return
     }
 
+    const data = user.toJSON()
+
+    data.Comments = data.Comments.sort((a, b) => {
+      return a.restaurantId - b.restaurantId
+    })
+    const removeDuplicates = array => {
+      if (array.length <= 1) {
+        return array
+      }
+
+      let i = 0; let j = 1
+      for (; i < array.length && j < array.length; j++) {
+        if (array[i].restaurantId !== array[j].restaurantId) {
+          array[++i] = array[j]
+        }
+      }
+      array.splice(i + 1, j - i)
+      return array
+    }
+    removeDuplicates(data.Comments)
+
     const reqUserId = req.user?.id || undefined
-    res.render('users/profile', { user: user.toJSON(), reqUserId })
+    res.render('users/profile', { user: data, reqUserId })
   },
   editUser: async (req, res, next) => {
     const [err, user] = await to(User.findByPk(req.params.id, { raw: true }))
