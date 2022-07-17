@@ -106,24 +106,22 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getTopRestaurants: async (req, res) => {
-    try {
-      const restauransLimit = 10
-      const restaurants = await Restaurant.findAll({
-        include: [{ model: User, as: 'FavoritedUsers' }]
-      })
-      const data = restaurants.map(r => ({
-        ...r.toJSON(),
-        favoritedCount: r.FavoritedUsers.length,
-        isFavorited: r.FavoritedUsers.some(f => f.id === req.user?.id)
-      }))
-        .sort((a, b) => b.FavoritedUsers.length - a.FavoritedUsers.length)
-        .slice(0, restauransLimit)
+  getTopRestaurants: (req, res) => {
+    const restauransLimit = 10
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const data = restaurants.map(r => ({
+          ...r.toJSON(),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: r.FavoritedUsers.some(f => f.id === req.user?.id)
+        }))
+          .sort((a, b) => b.FavoritedUsers.length - a.FavoritedUsers.length)
+          .slice(0, restauransLimit)
 
-      res.render('top-restaurants', { restaurants: data })
-    } catch (error) {
-      res.redirect('/')
-    }
+        res.render('top-restaurants', { restaurants: data })
+      })
   }
 }
 module.exports = restaurantController
